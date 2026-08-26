@@ -303,11 +303,22 @@ const studentId = document.getElementById("studentId");
 const studentName = document.getElementById("studentName");
 const loginBtn = document.getElementById("loginBtn");
 
+/* 통합학습포털에서 넘어올 때 ?sid=학번&name=이름 이 자동으로 붙어서 온다.
+ * 있으면 학번/이름을 미리 채워준다 (학생이 다시 안 쳐도 되게). */
+(function autofillFromPortal(){
+  const params = new URLSearchParams(window.location.search);
+  const sid = params.get("sid");
+  const name = params.get("name");
+  if(sid) studentId.value = sid;
+  if(name) studentName.value = name;
+})();
+
 function checkLogin(){
   const idOk = /^\d{5}$/.test(studentId.value.trim());
   loginBtn.disabled = !(idOk && studentName.value.trim());
 }
 [studentId, studentName].forEach(el=>el.addEventListener("input", checkLogin));
+checkLogin(); // 자동 채움 직후에도 버튼 활성화 상태를 바로 반영
 
 loginBtn.addEventListener("click", ()=>{
   showScreen("screen-judge");
